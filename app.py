@@ -38,7 +38,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = db_url
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_SECRET_KEY'] = 'super-secret-mri-key' # Change in production
-app.config['UPLOAD_FOLDER'] = 'static/uploads'
+app.config['UPLOAD_FOLDER'] = '/tmp/uploads'
 
 # Create upload folder if not exists
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
@@ -160,7 +160,7 @@ def predict():
 
     processed = preprocess(image)
     loaded_model = get_model()
-    prob = float(loaded_model(processed, training=False).numpy()[0][0])
+    prob = float(loaded_model.predict(processed, verbose=0)[0][0])
     
     is_tumor = prob > 0.5
     label = 'Tumor Detected' if is_tumor else 'No Tumor Detected'
