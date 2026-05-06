@@ -3,6 +3,8 @@ import axios from 'axios'
 import Auth from './Auth'
 import './index.css'
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 export default function App() {
   const [token, setToken] = useState(localStorage.getItem('mri_token') || null)
   const [userName, setUserName] = useState(localStorage.getItem('mri_user_name') || '')
@@ -51,7 +53,7 @@ export default function App() {
 
   async function fetchHistory() {
     try {
-      const res = await axios.get('http://localhost:5000/api/history', {
+      const res = await axios.get(`${API_URL}/api/history`, {
         headers: { Authorization: `Bearer ${token}` }
       })
       setHistory(res.data)
@@ -65,7 +67,7 @@ export default function App() {
 
   async function fetchAdminData() {
     try {
-      const res = await axios.get('http://localhost:5000/api/admin/all_data', {
+      const res = await axios.get(`${API_URL}/api/admin/all_data`, {
         headers: { Authorization: `Bearer ${token}` }
       })
       setAdminData(res.data)
@@ -108,7 +110,7 @@ export default function App() {
     const formData = new FormData()
     formData.append('image', file)
     try {
-      const res = await axios.post('http://localhost:5000/predict', formData, {
+      const res = await axios.post(`${API_URL}/predict`, formData, {
         headers: { Authorization: `Bearer ${token}` }
       })
       setResult(res.data)

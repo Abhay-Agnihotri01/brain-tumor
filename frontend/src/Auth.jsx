@@ -2,6 +2,8 @@ import { useState } from 'react';
 import axios from 'axios';
 import './index.css';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 export default function Auth({ onLogin }) {
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({ name: '', email: '', password: '', adminCode: '' });
@@ -56,7 +58,7 @@ export default function Auth({ onLogin }) {
     try {
       if (!isLogin) {
         // SIGNUP
-        await axios.post('http://localhost:5000/api/register', {
+        await axios.post(`${API_URL}/api/register`, {
           name: formData.name.trim(),
           email: formData.email.trim(),
           password: formData.password,
@@ -68,7 +70,7 @@ export default function Auth({ onLogin }) {
         alert('Registration successful! Please login.');
       } else {
         // LOGIN
-        const res = await axios.post('http://localhost:5000/api/login', {
+        const res = await axios.post(`${API_URL}/api/login`, {
           email: formData.email.trim(),
           password: formData.password
         });
