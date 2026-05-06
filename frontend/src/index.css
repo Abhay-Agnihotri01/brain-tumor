@@ -927,3 +927,5 @@ body::before {
   color: var(--blue);
   font-weight: bold;
 }
+. c l o s e - a u t h - b t n   {   p o s i t i o n :   a b s o l u t e ;   t o p :   1 5 p x ;   r i g h t :   1 5 p x ;   b a c k g r o u n d :   t r a n s p a r e n t ;   b o r d e r :   n o n e ;   f o n t - s i z e :   2 4 p x ;   c o l o r :   v a r ( - - t e x t - m u t e d ) ;   c u r s o r :   p o i n t e r ;   t r a n s i t i o n :   c o l o r   0 . 2 s ;   }   . c l o s e - a u t h - b t n : h o v e r   {   c o l o r :   v a r ( - - t e x t - c o l o r ) ;   }  
+ 

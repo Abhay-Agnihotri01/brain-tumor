@@ -10,6 +10,7 @@ export default function App() {
   const [userName, setUserName] = useState(localStorage.getItem('mri_user_name') || '')
   const [isAdmin, setIsAdmin] = useState(localStorage.getItem('mri_is_admin') === 'true')
   const [isAuthenticated, setIsAuthenticated] = useState(!!token)
+  const [showAuthModal, setShowAuthModal] = useState(false)
   
   const [isDarkMode, setIsDarkMode] = useState(true)
 
@@ -104,6 +105,10 @@ export default function App() {
   }
 
   async function analyze() {
+    if (!isAuthenticated) {
+      setShowAuthModal(true);
+      return;
+    }
     if (!file || loading) return
     setLoading(true)
     setResult(null)
@@ -127,9 +132,7 @@ export default function App() {
     }
   }
 
-  if (!isAuthenticated) {
-    return <Auth onLogin={handleLogin} />
-  }
+
 
   return (
     <div className="app">
@@ -144,8 +147,8 @@ export default function App() {
 
         <div className="header-nav">
           <button className={`nav-btn ${activeTab === 'upload' ? 'active' : ''}`} onClick={() => setActiveTab('upload')}>Upload Scan</button>
-          <button className={`nav-btn ${activeTab === 'history' ? 'active' : ''}`} onClick={() => setActiveTab('history')}>My Dashboard</button>
-          {isAdmin && (
+          <button className={`nav-btn ${activeTab === 'history' ? 'active' : ''}`} onClick={() => { if (!isAuthenticated) setShowAuthModal(true); else setActiveTab('history'); }}>My Dashboard</button>
+          {isAdmin && isAuthenticated && (
             <button className={`nav-btn ${activeTab === 'admin' ? 'active' : ''}`} onClick={() => setActiveTab('admin')}>Admin Panel</button>
           )}
         </div>
@@ -154,8 +157,14 @@ export default function App() {
           <button className="theme-toggle-btn" onClick={() => setIsDarkMode(!isDarkMode)}>
             {isDarkMode ? '☀️' : '🌙'}
           </button>
-          <span className="user-greeting">Hi, {userName.split(' ')[0]}</span>
-          <button className="logout-btn" onClick={handleLogout}>Logout</button>
+          {isAuthenticated ? (
+            <>
+              <span className="user-greeting">Hi, {userName.split(' ')[0]}</span>
+              <button className="logout-btn" onClick={handleLogout}>Logout</button>
+            </>
+          ) : (
+            <button className="logout-btn" onClick={() => setShowAuthModal(true)}>Login / Sign Up</button>
+          )}
         </div>
       </header>
 
@@ -523,6 +532,16 @@ export default function App() {
           </div>
         </div>
       </footer>
+
+      {showAuthModal && (
+        <Auth 
+          onLogin={(jwt, name, adminStatus) => {
+            handleLogin(jwt, name, adminStatus);
+            setShowAuthModal(false);
+          }} 
+          onClose={() => setShowAuthModal(false)} 
+        />
+      )}
     </div>
   )
 }

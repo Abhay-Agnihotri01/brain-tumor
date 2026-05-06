@@ -4,7 +4,7 @@ import './index.css';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
-export default function Auth({ onLogin }) {
+export default function Auth({ onLogin, onClose }) {
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({ name: '', email: '', password: '', adminCode: '' });
   const [showPassword, setShowPassword] = useState(false);
@@ -96,6 +96,7 @@ export default function Auth({ onLogin }) {
       <div className="auth-bg-sphere sphere-2"></div>
       
       <div className={`auth-card ${isLogin ? 'login-mode' : 'signup-mode'}`}>
+        <button className="close-auth-btn" onClick={onClose}>&times;</button>
         <div className="auth-header">
           <div className="auth-logo">🧠</div>
           <h2>{isLogin ? 'Welcome Back' : 'Create Account'}</h2>
