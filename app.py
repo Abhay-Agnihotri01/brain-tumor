@@ -72,7 +72,13 @@ with app.app_context():
     db.create_all()
 
 # --- ML Model ---
-model = keras.models.load_model('models/cnn-parameters-improvement-23-0.91.model', compile=False)
+model = None
+
+def get_model():
+    global model
+    if model is None:
+        model = keras.models.load_model('models/cnn-parameters-improvement-23-0.91.model', compile=False)
+    return model
 
 def crop_brain_contour(image):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -154,7 +160,8 @@ def predict():
         return jsonify({'error': 'Invalid image'}), 400
 
     processed = preprocess(image)
-    prob = float(model(processed, training=False).numpy()[0][0])
+    loaded_model = get_model()
+    prob = float(loaded_model(processed, training=False).numpy()[0][0])
     
     is_tumor = prob > 0.5
     label = 'Tumor Detected' if is_tumor else 'No Tumor Detected'
