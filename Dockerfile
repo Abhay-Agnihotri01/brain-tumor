@@ -18,5 +18,5 @@ EXPOSE 7860
 # Create the uploads folder (since it is ignored by gitignore)
 RUN mkdir -p static/uploads
 
-# Start the Flask app using Gunicorn on port 7860
-CMD ["gunicorn", "-b", "0.0.0.0:7860", "app:app"]
+# Start the Flask app using the built-in server on port 7860 to avoid Gunicorn multiprocessing crashes
+CMD ["python", "app.py"]
