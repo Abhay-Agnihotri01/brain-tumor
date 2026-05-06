@@ -1,17 +1,17 @@
+import os
+os.environ['TF_USE_LEGACY_KERAS'] = '1'
+import tensorflow as tf
+import tf_keras as keras
+import base64
+
 import cv2
 import numpy as np
 import imutils
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
-import os
 import datetime
 import random
 import json
-
-os.environ['TF_USE_LEGACY_KERAS'] = '1'
-import tensorflow as tf
-import tf_keras as keras
-import base64
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
