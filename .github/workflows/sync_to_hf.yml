@@ -20,10 +20,21 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install Hugging Face Hub CLI
-        run: pip install -U "huggingface_hub[cli]"
+      - name: Install Hugging Face Hub
+        run: pip install -U huggingface_hub
 
       - name: Push to hub
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: huggingface-cli upload Abhay786/brain-tumor-backend . . --repo-type=space --token=$HF_TOKEN
+        run: |
+          python -c '
+          import os
+          from huggingface_hub import HfApi
+          api = HfApi(token=os.environ["HF_TOKEN"])
+          api.upload_folder(
+              repo_id="Abhay786/brain-tumor-backend",
+              folder_path=".",
+              repo_type="space",
+              ignore_patterns=[".git/*"]
+          )
+          '
