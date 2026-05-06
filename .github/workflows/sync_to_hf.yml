@@ -14,7 +14,16 @@ jobs:
         with:
           fetch-depth: 0
           lfs: true
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Hugging Face Hub CLI
+        run: pip install -U "huggingface_hub[cli]"
+
       - name: Push to hub
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: git push --force https://Abhay786:$HF_TOKEN@huggingface.co/spaces/Abhay786/brain-tumor-backend main
+        run: huggingface-cli upload Abhay786/brain-tumor-backend . . --repo-type=space --token=$HF_TOKEN
