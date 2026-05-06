@@ -29,10 +29,10 @@ from sqlalchemy.engine import URL
 
 db_url = URL.create(
     drivername="postgresql",
-    username="postgres",
+    username="postgres.ahgsmzdqgaxrzsteqvxp",
     password="Abhay8957479757$",
-    host="db.ahgsmzdqgaxrzsteqvxp.supabase.co",
-    port=5432,
+    host="aws-1-ap-northeast-1.pooler.supabase.com",
+    port=6543,
     database="postgres"
 )
 app.config['SQLALCHEMY_DATABASE_URI'] = db_url
