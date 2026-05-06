@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Brain Tumor Detector</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0a0e1a;
+      color: #e0e6f0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      width: 100%;
+      padding: 24px 40px;
+      background: linear-gradient(90deg, #0d1b2a, #1a2a4a);
+      border-bottom: 1px solid #1e3a5f;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    header .brain-icon {
+      font-size: 2rem;
+    }
+
+    header h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, #4fc3f7, #7c4dff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    header p {
+      font-size: 0.8rem;
+      color: #7a9bbf;
+      margin-top: 2px;
+    }
+
+    .badge {
+      margin-left: auto;
+      background: rgba(79, 195, 247, 0.1);
+      border: 1px solid #4fc3f7;
+      color: #4fc3f7;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+    }
+
+    main {
+      width: 100%;
+      max-width: 1000px;
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .stats-row {
+      display: flex;
+      gap: 16px;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .stat-card {
+      background: #0d1b2a;
+      border: 1px solid #1e3a5f;
+      border-radius: 12px;
+      padding: 16px 28px;
+      text-align: center;
+      flex: 1;
+      max-width: 200px;
+    }
+
+    .stat-card .value {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #4fc3f7;
+    }
+
+    .stat-card .label {
+      font-size: 0.75rem;
+      color: #7a9bbf;
+      margin-top: 4px;
+    }
+
+    .upload-section {
+      width: 100%;
+      background: #0d1b2a;
+      border: 2px dashed #1e3a5f;
+      border-radius: 16px;
+      padding: 48px 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.3s, background 0.3s;
+      position: relative;
+    }
+
+    .upload-section:hover, .upload-section.dragover {
+      border-color: #4fc3f7;
+      background: #0f2035;
+    }
+
+    .upload-section input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+
+    .upload-icon { font-size: 3rem; margin-bottom: 12px; }
+
+    .upload-section h2 {
+      font-size: 1.1rem;
+      color: #c0d4e8;
+      margin-bottom: 6px;
+    }
+
+    .upload-section p {
+      font-size: 0.82rem;
+      color: #5a7a9a;
+    }
+
+    .upload-section .formats {
+      margin-top: 12px;
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .formats span {
+      background: #1a2a4a;
+      border: 1px solid #2a4a6a;
+      border-radius: 6px;
+      padding: 2px 10px;
+      font-size: 0.72rem;
+      color: #7a9bbf;
+    }
+
+    .analyze-btn {
+      padding: 14px 48px;
+      background: linear-gradient(90deg, #4fc3f7, #7c4dff);
+      border: none;
+      border-radius: 30px;
+      color: white;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.2s;
+      display: none;
+    }
+
+    .analyze-btn:hover { opacity: 0.9; transform: scale(1.02); }
+    .analyze-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .results-section {
+      width: 100%;
+      display: none;
+      gap: 24px;
+      flex-direction: row;
+    }
+
+    .image-panel, .result-panel {
+      background: #0d1b2a;
+      border: 1px solid #1e3a5f;
+      border-radius: 16px;
+      padding: 24px;
+      flex: 1;
+    }
+
+    .panel-title {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #4fc3f7;
+      margin-bottom: 16px;
+    }
+
+    .image-panel img {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid #1e3a5f;
+    }
+
+    .result-label {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .result-label.tumor { color: #ff5252; }
+    .result-label.no-tumor { color: #69f0ae; }
+
+    .confidence-bar-wrap {
+      margin: 20px 0;
+    }
+
+    .confidence-bar-wrap .bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: #7a9bbf;
+      margin-bottom: 6px;
+    }
+
+    .bar-bg {
+      background: #1a2a4a;
+      border-radius: 10px;
+      height: 10px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 10px;
+      transition: width 1s ease;
+    }
+
+    .bar-fill.tumor { background: linear-gradient(90deg, #ff5252, #ff1744); }
+    .bar-fill.no-tumor { background: linear-gradient(90deg, #69f0ae, #00e676); }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .info-item {
+      background: #0a1525;
+      border: 1px solid #1e3a5f;
+      border-radius: 10px;
+      padding: 12px;
+    }
+
+    .info-item .info-label {
+      font-size: 0.7rem;
+      color: #5a7a9a;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .info-item .info-value {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #c0d4e8;
+      margin-top: 4px;
+    }
+
+    .disclaimer {
+      font-size: 0.75rem;
+      color: #4a6a8a;
+      margin-top: 20px;
+      padding: 10px;
+      border: 1px solid #1e3a5f;
+      border-radius: 8px;
+      background: #0a1525;
+    }
+
+    .spinner {
+      display: none;
+      width: 36px;
+      height: 36px;
+      border: 3px solid #1e3a5f;
+      border-top-color: #4fc3f7;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    footer {
+      margin-top: auto;
+      padding: 20px;
+      font-size: 0.75rem;
+      color: #3a5a7a;
+      text-align: center;
+    }
+
+    @media (max-width: 640px) {
+      .results-section { flex-direction: column; }
+      .stats-row { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="brain-icon">🧠</div>
+  <div>
+    <h1>Brain Tumor Detector</h1>
+    <p>AI-powered MRI Analysis using Convolutional Neural Network</p>
+  </div>
+  <div class="badge">CNN Model · 89% Accuracy</div>
+</header>
+
+<main>
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="value">89%</div>
+      <div class="label">Test Accuracy</div>
+    </div>
+    <div class="stat-card">
+      <div class="value">0.88</div>
+      <div class="label">F1 Score</div>
+    </div>
+    <div class="stat-card">
+      <div class="value">91%</div>
+      <div class="label">Val Accuracy</div>
+    </div>
+    <div class="stat-card">
+      <div class="value">2065</div>
+      <div class="label">Training Images</div>
+    </div>
+  </div>
+
+  <div class="upload-section" id="dropZone">
+    <input type="file" id="fileInput" accept="image/*" />
+    <div class="upload-icon">📂</div>
+    <h2>Drop your Brain MRI image here</h2>
+    <p>or click to browse from your computer</p>
+    <div class="formats">
+      <span>JPG</span><span>JPEG</span><span>PNG</span>
+    </div>
+  </div>
+
+  <button class="analyze-btn" id="analyzeBtn" onclick="analyze()">
+    🔍 Analyze MRI Scan
+  </button>
+
+  <div class="spinner" id="spinner"></div>
+
+  <div class="results-section" id="results">
+    <div class="image-panel">
+      <div class="panel-title">📷 Processed MRI Scan</div>
+      <img id="processedImg" src="" alt="Processed MRI" />
+    </div>
+    <div class="result-panel">
+      <div class="panel-title">🔬 Analysis Result</div>
+      <div class="result-label" id="resultLabel"></div>
+
+      <div class="confidence-bar-wrap">
+        <div class="bar-label">
+          <span>Confidence</span>
+          <span id="confidenceText"></span>
+        </div>
+        <div class="bar-bg">
+          <div class="bar-fill" id="barFill" style="width:0%"></div>
+        </div>
+      </div>
+
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-label">Model</div>
+          <div class="info-value">CNN (Custom)</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Input Size</div>
+          <div class="info-value">240 × 240 px</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Preprocessing</div>
+          <div class="info-value">Brain Crop + Normalize</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Architecture</div>
+          <div class="info-value">Conv → BN → ReLU → Pool</div>
+        </div>
+      </div>
+
+      <div class="disclaimer">
+        ⚠️ This tool is for educational purposes only. Always consult a qualified medical professional for diagnosis.
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>Brain Tumor Detection · Built with TensorFlow/Keras · CNN Model trained on Kaggle MRI Dataset</footer>
+
+<script>
+  let selectedFile = null;
+
+  const dropZone = document.getElementById('dropZone');
+  const fileInput = document.getElementById('fileInput');
+  const analyzeBtn = document.getElementById('analyzeBtn');
+
+  fileInput.addEventListener('change', e => {
+    if (e.target.files[0]) selectFile(e.target.files[0]);
+  });
+
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    if (e.dataTransfer.files[0]) selectFile(e.dataTransfer.files[0]);
+  });
+
+  function selectFile(file) {
+    selectedFile = file;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      dropZone.innerHTML = `
+        <input type="file" id="fileInput" accept="image/*" />
+        <img src="${ev.target.result}" style="max-height:180px;border-radius:10px;margin-bottom:10px;" />
+        <p style="color:#4fc3f7;font-size:0.85rem;">✅ ${file.name}</p>
+        <p style="color:#5a7a9a;font-size:0.75rem;margin-top:4px;">Click to change image</p>
+      `;
+      document.getElementById('fileInput').addEventListener('change', e => {
+        if (e.target.files[0]) selectFile(e.target.files[0]);
+      });
+    };
+    reader.readAsDataURL(file);
+    analyzeBtn.style.display = 'block';
+    document.getElementById('results').style.display = 'none';
+  }
+
+  async function analyze() {
+    if (!selectedFile) return;
+    analyzeBtn.disabled = true;
+    document.getElementById('spinner').style.display = 'block';
+    document.getElementById('results').style.display = 'none';
+
+    const formData = new FormData();
+    formData.append('image', selectedFile);
+
+    try {
+      const res = await fetch('/predict', { method: 'POST', body: formData });
+      const data = await res.json();
+
+      if (data.error) { alert(data.error); return; }
+
+      const label = document.getElementById('resultLabel');
+      label.textContent = data.tumor ? '🔴 ' + data.label : '🟢 ' + data.label;
+      label.className = 'result-label ' + (data.tumor ? 'tumor' : 'no-tumor');
+
+      document.getElementById('confidenceText').textContent = data.confidence + '%';
+      const bar = document.getElementById('barFill');
+      bar.className = 'bar-fill ' + (data.tumor ? 'tumor' : 'no-tumor');
+      setTimeout(() => bar.style.width = data.confidence + '%', 100);
+
+      document.getElementById('processedImg').src = 'data:image/jpeg;base64,' + data.processed_image;
+      document.getElementById('results').style.display = 'flex';
+    } catch (err) {
+      alert('Something went wrong. Please try again.');
+    } finally {
+      analyzeBtn.disabled = false;
+      document.getElementById('spinner').style.display = 'none';
+    }
+  }
+</script>
+</body>
+</html>
