@@ -15,7 +15,7 @@ logs/
 static/uploads/
 
 # Models
-models/
+# models/ (Removed so the model is uploaded to GitHub and Hugging Face)
 
 # Environments
 .env
