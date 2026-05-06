@@ -1,7 +1,6 @@
 import os
-os.environ['TF_USE_LEGACY_KERAS'] = '1'
 import tensorflow as tf
-import tf_keras as keras
+from tensorflow import keras
 import base64
 
 import cv2
