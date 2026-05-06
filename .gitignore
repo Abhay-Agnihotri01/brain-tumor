@@ -14,9 +14,8 @@ augmented data/
 logs/
 static/uploads/
 
-# Models (ignoring all except the one in use)
-models/*
-!models/cnn-parameters-improvement-23-0.91.model
+# Models
+models/
 
 # Environments
 .env
