@@ -31,7 +31,7 @@ db_url = URL.create(
     drivername="postgresql",
     username="postgres",
     password="Abhay8957479757$",
-    host="db.qmptvzzsgdsgjzczqmmn.supabase.co",
+    host="db.ahgsmzdqgaxrzsteqvxp.supabase.co",
     port=5432,
     database="postgres"
 )
