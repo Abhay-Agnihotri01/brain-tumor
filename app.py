@@ -32,7 +32,7 @@ db_url = URL.create(
     username="postgres.ahgsmzdqgaxrzsteqvxp",
     password="Abhay8957479757$",
     host="aws-1-ap-northeast-1.pooler.supabase.com",
-    port=6543,
+    port=5432,
     database="postgres"
 )
 app.config['SQLALCHEMY_DATABASE_URI'] = db_url
